@@ -1,4 +1,4 @@
-# Dashboard – Smart Grain Storage Monitoring System
+# Dashboard 
 
 ## Overview
 
