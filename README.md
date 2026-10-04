@@ -110,7 +110,7 @@ The current prototype consists of **two operational wireless sensing nodes** con
 Each prototype node currently contains:
 
 - ESP32 microcontroller
-- DB18S20 temperature sensor
+- DS18B20 temperature sensor
 - NTC thermistor
 - NEO-6M GPS module
 - OLED display
@@ -441,7 +441,7 @@ This allows the system to provide an alert both remotely and directly at the mon
 |---|---|---|
 | ESP32 | ✅ | ✅ |
 | DHT11 | ❌ | ✅ |
-| DB18S20 | ✅ | ❌ Replaced by DHT11 |
+| DS18B20 | ✅ | ❌ Replaced by DHT11 |
 | NTC Thermistor | ✅ | ✅ |
 | Temperature Sensor Fusion | ✅ | ✅ |
 | Relative Humidity | ✅ | ✅ |
@@ -506,7 +506,7 @@ Centralized Monitoring
 
 - ESP32
 - DHT11 temperature and relative-humidity sensor
-- DB18S20 for prototype development
+- DS18B20 for prototype development
 - NTC thermistor
 - Buzzer
 - NEO-6M GPS for development / temporary location initialization
