@@ -172,7 +172,7 @@ The fused output is then passed through a Kalman filter to reduce short-term flu
 
 # Relative Humidity Measurement
 
-The AHT10 also provides relative-humidity measurements.
+The DHT11 also provides relative-humidity measurements.
 
 Relative humidity is important in both target applications.
 
