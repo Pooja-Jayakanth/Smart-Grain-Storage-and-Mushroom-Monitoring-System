@@ -110,24 +110,18 @@ The current prototype consists of **two operational wireless sensing nodes** con
 Each prototype node currently contains:
 
 - ESP32 microcontroller
-- AHT10 temperature and relative-humidity sensor
+- DB18S20 temperature sensor
 - NTC thermistor
 - NEO-6M GPS module
 - OLED display
 - Power-management circuitry
-
-
-The AHT10 provides:
-
-- Temperature measurement
-- Relative-humidity measurement
-- I2C communication with the ESP32
+- Push button
 
 For temperature measurement, a sensor-fusion architecture is implemented.
 
 Temperature measurements from:
 
-- AHT10
+- DB18S20
 - NTC thermistor
 
 are processed using the:
@@ -144,7 +138,7 @@ are processed using the:
 # Temperature Processing Architecture
 
 ```text
-AHT10 Temperature  NTC Temperature
+DB18S20 Temperature  NTC Temperature
         │               |
         │               |
         |               |
@@ -273,7 +267,7 @@ Removing the OLED from the final node helps to:
 The final competition version of the sensing node is planned to include:
 
 - ESP32 microcontroller
-- AHT10 temperature and relative-humidity sensor
+- DHT11 temperature and relative-humidity sensor
 - NTC thermistor
 - Buzzer
 - Custom PCB
@@ -446,15 +440,18 @@ This allows the system to provide an alert both remotely and directly at the mon
 | Feature | Semi-Final Prototype | Final Competition Model |
 |---|---|---|
 | ESP32 | ✅ | ✅ |
-| AHT10 | ✅ | ✅ |
+| DHT11 | ❌ | ✅ |
+| DB18S20 | ✅ | ❌ Replaced by DHT11 |
 | NTC Thermistor | ✅ | ✅ |
 | Temperature Sensor Fusion | ✅ | ✅ |
 | Relative Humidity | ✅ | ✅ |
+| IRLZ44N | ✅ | ✅ |
 | Wi-Fi | ✅ | ✅ |
 | MQTT | ✅ | ✅ |
 | Node-RED Dashboard | ✅ | ✅ |
 | GPS | ✅ Development / verification | Temporary connection only |
 | OLED | ✅ Development / verification | ❌ Removed |
+| Push button | ✅ | ❌ Removed |
 | Buzzer | Under development | ✅ |
 | Custom PCB | Designed | ✅ |
 | Custom Enclosure | Designed | ✅ |
@@ -471,8 +468,7 @@ This allows the system to provide an alert both remotely and directly at the mon
 At the semi-final stage, the project has achieved:
 
 - Two operational sensing nodes
-- AHT10 temperature measurement
-- AHT10 relative-humidity measurement
+- DB18S20 temperature measurement
 - NTC temperature measurement
 - Temperature sensor calibration
 - WLS temperature sensor fusion
@@ -509,14 +505,17 @@ Centralized Monitoring
 ## Hardware
 
 - ESP32
-- AHT10 temperature and relative-humidity sensor
+- DHT11 temperature and relative-humidity sensor
+- DB18S20 for prototype development
 - NTC thermistor
 - Buzzer
 - NEO-6M GPS for development / temporary location initialization
 - OLED for prototype development
+- Pushbutton for prototype development
 - Custom PCB
 - Custom enclosure
 - Power-management circuitry
+- IRLZ44N MOSFET
 
 ## Embedded Processing
 
@@ -590,6 +589,7 @@ The current system is still at the prototype and semi-final development stage.
 Current limitations include:
 
 - Buzzer integration is still being completed
+- DHT11 calibration and integration is still being completed.
 - Grain-condition assessment logic requires final validation
 - Mushroom-condition assessment logic requires final validation
 - Threshold values must be fully documented using relevant research sources
@@ -719,7 +719,7 @@ The current threshold-based system provides an interpretable engineering baselin
  ┌─────────────────────────────────────┐
  │               NODE 01               │
  │                                     │
- │ AHT10 → Temperature + RH            │
+ │ DHT11 → Temperature + RH            │
  │ NTC   → Temperature                 │
  │                                     │
  │                                     │
