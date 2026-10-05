@@ -101,8 +101,6 @@ The threshold values for grain storage and mushroom monitoring will be applicati
 
 ## 1. Semi-Final Prototype
 
-The prototype demonstrated at the IoTrix 2.0 semi-final is based on the previously developed distributed temperature-monitoring platform.
-
 The current prototype consists of **two operational wireless sensing nodes** connected to a centralized Node-RED monitoring dashboard.
 
 ### Components Used in the Semi-Final Prototype
