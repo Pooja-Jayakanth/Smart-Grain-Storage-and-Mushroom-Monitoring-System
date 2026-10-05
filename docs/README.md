@@ -12,5 +12,4 @@ This folder includes:
 - One-Page Technical Progress Sheet
 - System Architecture Diagram
 - Testing and Validation Summary
-- Technical Documentation
 - Supporting figures and project images
