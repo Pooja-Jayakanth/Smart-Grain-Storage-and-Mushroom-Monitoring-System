@@ -139,11 +139,17 @@ The NTC ADC reading is averaged over **20 samples** before converting it to resi
 
 The 20 ADC samples are:
 
-**ADC₁, ADC₂, ADC₃, …, ADC₂₀**
+```math
+ADC_1,\ ADC_2,\ ADC_3,\ldots,\ ADC_{20}
+```
 
 The average ADC value is:
 
-**ADC_avg = (ADC₁ + ADC₂ + ADC₃ + … + ADC₂₀) / 20**
+```math
+ADC_{\mathrm{avg}}
+=
+\frac{1}{20}\sum_{i=1}^{20} ADC_i
+```
 
 This averaged value is used in the resistance calculation.
 
@@ -153,12 +159,22 @@ This averaged value is used in the resistance calculation.
 
 The NTC resistance is calculated from the voltage-divider output as:
 
-**R_NTC = R_fixed × ADC_avg / (ADC_max − ADC_avg)**
+```math
+R_{\mathrm{NTC}}
+=
+R_{\mathrm{fixed}}
+\frac{ADC_{\mathrm{avg}}}
+{ADC_{\max}-ADC_{\mathrm{avg}}}
+```
 
 where:
 
-- **R_fixed = 10,000 Ω**
-- **ADC_max = 4095**
+```math
+R_{\mathrm{fixed}} = 10{,}000\ \Omega
+```
+```math
+ADC_{\max}=4095
+```
 
 for the 12-bit ESP32 ADC.
 
@@ -168,17 +184,36 @@ for the 12-bit ESP32 ADC.
 
 The measured NTC resistance is converted to temperature using the Beta equation:
 
-**1 / T_K = 1 / T₀ + (1 / B) × ln(R_NTC / R₀)**
+```math
+\frac{1}{T_K}
+=
+\frac{1}{T_0}
++
+\frac{1}{B}
+\ln\left(
+\frac{R_{\mathrm{NTC}}}{R_0}
+\right)
+```
 
 where:
 
-- **T₀ = 298.15 K**
-- **R₀ = 10,000 Ω**
-- **B = 3950 K**
+```math
+T_0 = 298.15\ \mathrm{K}
+```
+```math
+R_0 = 10{,}000\ \Omega
+```
+```math
+B = 3950\ \mathrm{K}
+```
 
 The raw NTC temperature in degrees Celsius is:
 
-**T_NTC,raw = T_K − 273.15**
+```math
+T_{\mathrm{NTC,raw}}
+=
+T_K - 273.15
+```
 
 ---
 
@@ -199,12 +234,20 @@ The DS18B20 did not show a consistent fixed positive or negative bias across the
 
 Therefore, no additional linear correction was applied.
 
-**T_DS,cal = T_DS,raw**
+```math
+T_{\mathrm{DS,cal}}
+=
+T_{\mathrm{DS,raw}}
+```
 
 The calibration coefficients are therefore:
 
-- **A_DS = 1**
-- **B_DS = 0**
+```math
+A_{\mathrm{DS}}=1
+```
+```math
+B_{\mathrm{DS}}=0
+```
 
 ### 6.2 NTC Calibration
 
@@ -212,16 +255,30 @@ The NTC showed a systematic positive offset and therefore required linear calibr
 
 The general calibration equation is:
 
-**T_cal = A × T_raw + B_c**
+```math
+T_{\mathrm{cal}}
+=
+A\,T_{\mathrm{raw}} + B_c
+```
 
 The experimentally obtained coefficients for the NTC are:
 
-- **A_NTC = 1.008076**
-- **B_NTC = −2.507173**
+```math
+A_{\mathrm{NTC}}=1.008076
+```
+```math
+B_{\mathrm{NTC}}=-2.507173
+```
 
 Therefore:
 
-**T_NTC,cal = 1.008076 × T_NTC,raw − 2.507173**
+```math
+T_{\mathrm{NTC,cal}}
+=
+1.008076\,T_{\mathrm{NTC,raw}}
+-
+2.507173
+```
 
 This calibrated NTC temperature is used for fusion.
 
@@ -233,7 +290,11 @@ During the initial development stage, an **Exponential Moving Average (EMA)** fi
 
 The EMA equation is:
 
-**T_EMA(k) = α × T(k) + (1 − α) × T_EMA(k−1)**
+```math
+T_{\mathrm{EMA},k}
+=
+\alpha T_k+(1-\alpha)T_{\mathrm{EMA},k-1}
+```
 
 where:
 
@@ -244,11 +305,19 @@ where:
 
 The value used during testing was:
 
-**α = 0.20**
+```math
+\alpha = 0.20
+```
 
 Therefore:
 
-**T_EMA(k) = 0.20 × T(k) + 0.80 × T_EMA(k−1)**
+```math
+T_{\mathrm{EMA},k}
+=
+0.20T_k
++
+0.80T_{\mathrm{EMA},k-1}
+```
 
 The initial development flow was:
 
@@ -289,7 +358,13 @@ The prototype applies two main checks.
 
 The selected valid operating range is:
 
-**−20 °C < T < 100 °C**
+```math
+-20^\circ\mathrm{C}
+<
+T
+<
+100^\circ\mathrm{C}
+```
 
 Measurements at or outside the limits are rejected.
 
@@ -297,11 +372,17 @@ Measurements at or outside the limits are rejected.
 
 A new measurement is rejected if the change from the previous accepted measurement is greater than:
 
-**8 °C**
+```math
+8^\circ\mathrm{C}
+```
 
 That is:
 
-**|T(k) − T(k−1)| > 8 °C**
+```math
+\left|T_k-T_{k-1}\right|
+>
+8^\circ\mathrm{C}
+```
 
 is treated as an invalid sudden change.
 
@@ -318,8 +399,16 @@ This check helps reject:
 
 The measured standard deviations from the 100-sample characterization test were:
 
-- **σ_DS = 0.0251 °C**
-- **σ_NTC = 0.0540 °C**
+```math
+\sigma_{\mathrm{DS}}
+=
+0.0251^\circ\mathrm{C}
+```
+```math
+\sigma_{\mathrm{NTC}}
+=
+0.0540^\circ\mathrm{C}
+```
 
 The DS18B20 therefore showed lower random variation than the NTC.
 
@@ -337,17 +426,37 @@ The main idea is:
 
 The variance of each sensor is:
 
-**σ²_DS = (0.0251)² = 0.000630**
+```math
+\sigma_{\mathrm{DS}}^2
+=
+(0.0251)^2
+=
+0.000630
+```
 
-**σ²_NTC = (0.0540)² = 0.002916**
+```math
+\sigma_{\mathrm{NTC}}^2
+=
+(0.0540)^2
+=
+0.002916
+```
 
 ### 10.1 Information Values
 
 For each sensor, the information value is the inverse of its variance:
 
-**I_DS = 1 / σ²_DS**
+```math
+I_{\mathrm{DS}}
+=
+\frac{1}{\sigma_{\mathrm{DS}}^2}
+```
 
-**I_NTC = 1 / σ²_NTC**
+```math
+I_{\mathrm{NTC}}
+=
+\frac{1}{\sigma_{\mathrm{NTC}}^2}
+```
 
 A lower sensor variance therefore produces a larger information value.
 
@@ -355,18 +464,34 @@ A lower sensor variance therefore produces a larger information value.
 
 The information values are normalized to obtain the sensor weights:
 
-**w_DS = I_DS / (I_DS + I_NTC)**
+```math
+w_{\mathrm{DS}}
+=
+\frac{I_{\mathrm{DS}}}
+{I_{\mathrm{DS}}+I_{\mathrm{NTC}}}
+```
 
-**w_NTC = I_NTC / (I_DS + I_NTC)**
+```math
+w_{\mathrm{NTC}}
+=
+\frac{I_{\mathrm{NTC}}}
+{I_{\mathrm{DS}}+I_{\mathrm{NTC}}}
+```
 
 The experimentally derived weights are approximately:
 
-- **w_DS ≈ 0.822**
-- **w_NTC ≈ 0.178**
+```math
+w_{\mathrm{DS}}\approx0.822
+```
+```math
+w_{\mathrm{NTC}}\approx0.178
+```
 
 and:
 
-**w_DS + w_NTC = 1**
+```math
+w_{\mathrm{DS}}+w_{\mathrm{NTC}}=1
+```
 
 This means that the DS18B20 contributes more strongly because it showed lower measured noise.
 
@@ -374,11 +499,23 @@ This means that the DS18B20 contributes more strongly because it showed lower me
 
 The WLS fused temperature is:
 
-**T_WLS = w_DS × T_DS + w_NTC × T_NTC**
+```math
+T_{\mathrm{WLS}}
+=
+w_{\mathrm{DS}}T_{\mathrm{DS}}
++
+w_{\mathrm{NTC}}T_{\mathrm{NTC}}
+```
 
 Using the experimentally obtained weights:
 
-**T_WLS = 0.822 × T_DS + 0.178 × T_NTC**
+```math
+T_{\mathrm{WLS}}
+=
+0.822\,T_{\mathrm{DS}}
++
+0.178\,T_{\mathrm{NTC}}
+```
 
 Therefore:
 
@@ -395,14 +532,23 @@ WLS also produces an uncertainty value for the fused measurement.
 
 The fused variance is:
 
-**R_WLS = 1 / [(1 / σ²_DS) + (1 / σ²_NTC)]**
+```math
+R_{\mathrm{WLS}}
+=
+\frac{1}
+{
+\frac{1}{\sigma_{\mathrm{DS}}^2}
++
+\frac{1}{\sigma_{\mathrm{NTC}}^2}
+}
+```
 
 This value represents the uncertainty of the WLS fused temperature.
 
 The WLS stage therefore produces two important outputs:
 
-- **T_WLS** — fused temperature
-- **R_WLS** — fused measurement variance
+- `T_WLS` — fused temperature
+- `R_WLS` — fused measurement variance
 
 The fused variance is passed directly to the Kalman filter as the measurement-noise term.
 
@@ -416,7 +562,13 @@ The fusion stage checks the validity of both temperature sensors.
 
 Normal WLS fusion is used:
 
-**T_WLS = 0.822 × T_DS + 0.178 × T_NTC**
+```math
+T_{\mathrm{WLS}}
+=
+0.822\,T_{\mathrm{DS}}
++
+0.178\,T_{\mathrm{NTC}}
+```
 
 ### Only DS18B20 Valid
 
@@ -425,7 +577,9 @@ Normal WLS fusion is used:
 
 Therefore:
 
-**T_WLS = T_DS**
+```math
+T_{\mathrm{WLS}}=T_{\mathrm{DS}}
+```
 
 ### Only NTC Valid
 
@@ -434,7 +588,9 @@ Therefore:
 
 Therefore:
 
-**T_WLS = T_NTC**
+```math
+T_{\mathrm{WLS}}=T_{\mathrm{NTC}}
+```
 
 ### Both Sensors Invalid
 
@@ -478,7 +634,9 @@ The Kalman filter provides temporal smoothing while considering the uncertainty 
 
 The state being estimated is the true temperature:
 
-**x(k) = T(k)**
+```math
+x_k=T_k
+```
 
 ---
 
@@ -486,11 +644,19 @@ The state being estimated is the true temperature:
 
 The predicted temperature is assumed to remain close to the previous estimate:
 
-**x̂(k|k−1) = x̂(k−1|k−1)**
+```math
+\hat{x}_{k|k-1}
+=
+\hat{x}_{k-1|k-1}
+```
 
 The predicted covariance is:
 
-**P⁻(k) = P(k−1) + Q**
+```math
+P_k^{-}
+=
+P_{k-1}+Q
+```
 
 ---
 
@@ -498,11 +664,15 @@ The predicted covariance is:
 
 The process-noise standard deviation used in the prototype is:
 
-**σ_Q = 0.10**
+```math
+\sigma_Q=0.10
+```
 
 Therefore:
 
-**Q = (0.10)² = 0.01**
+```math
+Q=(0.10)^2=0.01
+```
 
 This term represents expected real temperature variation between consecutive samples.
 
@@ -512,7 +682,9 @@ This term represents expected real temperature variation between consecutive sam
 
 The measurement-noise term used by the Kalman filter is obtained directly from WLS:
 
-**R(k) = R_WLS**
+```math
+R_k=R_{\mathrm{WLS}}
+```
 
 This directly connects the WLS stage to the Kalman filter.
 
@@ -522,7 +694,12 @@ This directly connects the WLS stage to the Kalman filter.
 
 The Kalman gain is calculated as:
 
-**K(k) = P⁻(k) / [P⁻(k) + R(k)]**
+```math
+K_k
+=
+\frac{P_k^{-}}
+{P_k^{-}+R_k}
+```
 
 Interpretation:
 
@@ -535,15 +712,29 @@ Interpretation:
 
 The WLS fused temperature becomes the Kalman measurement input:
 
-**z(k) = T_WLS**
+```math
+z_k=T_{\mathrm{WLS}}
+```
 
 The updated temperature estimate is:
 
-**x̂(k) = x̂(k|k−1) + K(k) × [z(k) − x̂(k|k−1)]**
+```math
+\hat{x}_k
+=
+\hat{x}_{k|k-1}
++
+K_k\left(
+z_k-\hat{x}_{k|k-1}
+\right)
+```
 
 The covariance is then updated as:
 
-**P(k) = [1 − K(k)] × P⁻(k)**
+```math
+P_k
+=
+(1-K_k)P_k^{-}
+```
 
 The resulting value **x̂(k)** is the final temperature estimate.
 
@@ -730,7 +921,11 @@ EMA was useful for initial filtering.
 
 Its equation is:
 
-**T_EMA(k) = α × T(k) + (1 − α) × T_EMA(k−1)**
+```math
+T_{\mathrm{EMA},k}
+=
+\alpha T_k+(1-\alpha)T_{\mathrm{EMA},k-1}
+```
 
 However, EMA uses a fixed coefficient **α**.
 
@@ -738,7 +933,9 @@ It does not use the experimentally measured variance of each sensor.
 
 WLS instead uses:
 
-**wᵢ ∝ 1 / σᵢ²**
+```math
+w_i\propto\frac{1}{\sigma_i^2}
+```
 
 so the sensor weights come directly from measured sensor performance.
 
@@ -764,12 +961,20 @@ Final temporal estimation and smoothing
 
 A simple average would be:
 
-**T_avg = (T_DS + T_NTC) / 2**
+```math
+T_{\mathrm{avg}}
+=
+\frac{T_{\mathrm{DS}}+T_{\mathrm{NTC}}}{2}
+```
 
 which assumes:
 
-- **w_DS = 0.5**
-- **w_NTC = 0.5**
+```math
+w_{\mathrm{DS}}=0.5
+```
+```math
+w_{\mathrm{NTC}}=0.5
+```
 
 This would incorrectly treat both sensors as equally reliable.
 
@@ -845,7 +1050,7 @@ Therefore, a nonlinear estimator such as an Extended Kalman Filter is not requir
 | ADC maximum | 4095 |
 | NTC ADC averaging | 20 samples |
 | Calibration points | 28.0, 29.0, 29.5, 31.0 °C |
-| DS18B20 calibration | T_cal = T_raw |
+| DS18B20 calibration | `T_cal = T_raw` |
 | NTC calibration slope | 1.008076 |
 | NTC calibration offset | −2.507173 |
 | DS18B20 standard deviation | 0.0251 °C |
@@ -857,7 +1062,7 @@ Therefore, a nonlinear estimator such as an Extended Kalman Filter is not requir
 | Validation range | −20 °C < T < 100 °C |
 | Kalman process-noise standard deviation | 0.10 |
 | Kalman process noise, Q | 0.01 |
-| Kalman measurement noise | R(k) = R_WLS |
+| Kalman measurement noise | `R(k) = R_WLS` |
 
 ---
 
