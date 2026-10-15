@@ -1,0 +1,63 @@
+SISYPHUS PADDY-STORE SENSOR NODE - FLOW SIMULATION RESULTS
+SOLIDWORKS Flow Simulation 2024 SP1 | solved 14 Oct 2026 | converged at 382 iterations (all goals 100 %)
+
+QUESTION
+Does the temperature/humidity sensor (inside the louvred sensor holder below the box) read the real
+paddy-store air, or is it disturbed by the heat from the electronics box above it?
+
+CONDITIONS (Sri Lanka dry-zone paddy store)
+- Device hangs from its top tab; sensor holder is BELOW the PCB box (gravity toward the sensor)
+- Room air 32 C, 70 % RH, 101.3 kPa, still air (closed store, natural convection only)
+- Radiation ON: store walls at 32 C, no sun; printed surfaces emissivity 0.9 (white plastic)
+- PCB heat 1.35 W continuous = worst case, Wi-Fi always on
+    ESP-12F 0.5 W | 8 resistors 0.4 W | LDO regulator 0.25 W | Q1 0.2 W
+  (the RH/T sensor board itself has no heat)
+- Printed parts: PLA+ (white), 1230 kg/m3, 0.15 W/m.K, 1800 J/kg.K, softening limit 55 C
+- PCB: FR4 | Mesh: 3.16 million cells | Humid air model
+
+HEADLINE RESULTS
+                                   Value              Room air      Difference
+Sensor chip temperature            32.12 C            32.00 C       +0.12 C
+Air inside sensor holder           32.08 - 32.27 C    32.00 C       +0.08 to +0.27 C
+RH inside sensor holder            68.9 - 69.7 %      70.0 %        -0.3 to -1.1 %RH
+Air inside box (near PCB)          41.5 C, 42 % RH
+Warm plume above box (20-180 mm)   35.0 - 35.7 C, 57-59 % RH, rising 0.08-0.19 m/s
+Hottest PLA+ part                  about 50.4 C       limit 55 C    4.6 C margin
+Outer box wall, hottest area       about 45 C (top, around the upper vents and hanging tab)
+ESP-12F hottest point              82.5 C (worst-case 1.35 W)
+
+Typical RH/T sensor accuracy is about +/-0.3 C and +/-2-3 %RH.
+The heat-induced error at the sensor (+0.1 to +0.3 C, -0.3 to -1.1 %RH) is SMALLER than the sensor's own accuracy.
+
+CONCLUSION
+FEASIBLE. With the sensor holder hanging below the box, the warm air from the electronics rises up
+and away from the sensor. The sensor sees almost exactly the store air even in still air with the
+worst-case 1.35 W heat load. The design is suitable for monitoring paddy-store temperature and humidity.
+
+For comparison, an earlier check with the sensor ABOVE the box showed the sensor at about 49 C / 26 % RH
+(with PVC and no radiation, so not an exact like-for-like comparison). Placing the sensor below the box is the
+key design decision that makes the readings valid.
+
+DESIGN NOTES
+- Keep the hanging orientation: tab up, sensor down. Do not mount it sideways or upside down.
+- Do not place anything sensitive directly ABOVE the device: the plume is about 3-4 C warmer and up to 13 %RH drier.
+- Air movement inside the sensor holder is slow in still air (about 0.001-0.014 m/s), so readings follow room changes
+  over minutes, not seconds. This is fine for paddy storage, which changes over hours.
+- PLA+ stays under its 55 C limit with a 4.6 C margin even at worst-case power. In a hotter store
+  (e.g. 38-40 C on a hot day) that margin is used up, so PETG or ASA would be the safer print material
+  for the box, or reduce power with ESP deep sleep.
+
+LIMITS OF THIS MODEL
+- No wall and no paddy bags are modelled; the device hangs in open still air.
+- The sensor measures the air near the device, not the air inside the paddy bags.
+- Component heat values are estimates; 1.35 W continuous is a worst case (a 1000 mAh battery cannot supply
+  this for long). Real heat with deep sleep is lower, so the real sensor error will be even smaller.
+- Hot spots inside the PCB (up to about 126 C) are not reliable, because whole components were modelled as FR4.
+  Use the separate PCB thermal study for component temperatures. This does not affect the airflow or sensor results.
+
+FILES IN THIS FOLDER
+01 Temperature section front.png        - section through box, neck and sensor holder (32-40 C scale)
+02 Relative humidity section front.png  - same section, RH (50-70 % scale)
+03 Air speed section front.png          - same section, air speed (0-0.2 m/s)
+04 Surface temperature 3D.png           - outer surface temperatures (32-45 C scale)
+Probe point results.csv                 - temperature, RH and air speed at 17 probe points
