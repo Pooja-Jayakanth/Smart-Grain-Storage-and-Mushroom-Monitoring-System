@@ -95,21 +95,34 @@ an exact like-for-like comparison.
 * The hottest PLA+ temperature is calculated from SOLIDWORKS's "overheat above melting temperature" value (55 − 4.56 °C).
 * The heat-balance split comes from solver goal values.
 
-## Repository contents
+Repository contents
+The simulation documentation is in hardware/mechanical/Simulate/, while the actual CAD models are in the sibling folder hardware/mechanical/model/.
 
-```
-results/   Results summary, probe point CSV, result images
-report/    LaTeX source and PDF of the results
-setup/     Simulation inputs and probe point coordinates
-model/     SOLIDWORKS assembly (Pack and Go) to reproduce the study
-```
+hardware/mechanical/
+├── model/
+│   ├── assembly/
+│   │   └── Node enclosure.SLDASM
+│   └── parts/
+└── Simulate/
+    ├── README.md
+    ├── setup/
+    │   ├── simulation-setup.md
+    │   └── probe_points.csv
+    ├── results/
+    │   ├── Results summary.txt
+    │   ├── Probe point results.csv
+    │   └── images/
+    └── report/
+        ├── Flow simulation report.tex
+        └── Flow simulation results.tex
 
-The solver's raw output files (hundreds of MB) are not included. Open the assembly in SOLIDWORKS Flow Simulation
-and run the project to regenerate them.
+The solver's raw output files (hundreds of MB) are not included. The simulation-specific assembly Node enclosure_flow.SLDASM mentioned in earlier instructions is not present in the repository. The original CAD assembly is available at [`../model/assembly/Node enclosure.SLDASM`](../model/assembly/Node enclosure.SLDASM).
 
-## Reproduce
-
-1. Unzip `model/` and open `Node enclosure_flow.SLDASM` in SOLIDWORKS 2024 with Flow Simulation enabled.
-2. Add the material **PLA+ white print** and the radiative surface **WhitePLA** (emissivity 0.9) to the Engineering Database using the values above.
-3. Run the project `Paddy store still air 32C 70RH`; about 4–5 hours on a 16-thread laptop.
-4. Results → Point Parameters → Import `setup/probe_points.csv` to get the probe table.
+Reproduce
+1. Open [`../model/assembly/Node enclosure.SLDASM`](../model/assembly/Node enclosure.SLDASM) in SOLIDWORKS 2024, ensuring the referenced part files from [`../model/parts/`](../model/parts/) can be resolved.
+2. With SOLIDWORKS Flow Simulation enabled, recreate the study following [`setup/simulation-setup.md`](setup/simulation-setup.md). The published repository does not include the original Flow Simulation project files.
+3. Add the material PLA+ white print and the radiative surface WhitePLA (emissivity 0.9) to the Engineering Database using the parameters in the setup document.
+4. Set up the project using the documented conditions, heat sources, computational domain, mesh settings, and goals. The original study was named Paddy store still air 32C 70RH.
+5. Run the solver and compare your results with [`results/Results summary.txt`](results/Results summary.txt). The reported original solve required approximately 4–5 hours on a 16-thread laptop; reproduction time will vary.
+6. Import [`setup/probe_points.csv`](setup/probe_points.csv) via Results → Point Parameters → Import, then inspect the probe table. One listed point falls outside the documented final computational domain and should be omitted or repositioned.
+Note: Rebuilding the simulation from the CAD and documented settings may not reproduce the numerical results exactly without the original Flow Simulation project and engineering database entries.
